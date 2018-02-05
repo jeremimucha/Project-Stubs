@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required( VERSION 3.1 )
 
-set( ProjectName Enter_name_here )
-project( ${ProjectName} )
+set( Project !!_ENTER_PROJECT_NAME_HERE_!! )
+project( ${Project} )
 
 
 ###############################################################################
@@ -32,15 +32,20 @@ add_subdirectory( external/catch )
 ###############################################################################
 # Create a Sources variable to all the cpp files necessary
 # to build the target
-set( Sources
-     src/file1.cpp
-     src/file2.cpp
+set( MainSources
+    ${PROJECT_SOURCE_DIR}/src/main.cpp
    )
 
-# Or glob all the files
-# file( GLOB Sources 
-#       "${PROJECT_SOURCE_DIR}/src/*.cpp"
-#     )
+# Add all of the remaining source files to be build as a static library
+# linked against the main executable
+# set( LibrarySources
+#      ${PROJECT_SOURCE_DIR}/src/small_test.cpp
+#    )
+# Or let all of the source files be globed, minus the one given in MainSources
+file( GLOB LibrarySources
+      "${PROJECT_SOURCE_DIR}/src/*.cpp"
+    )
+list( REMOVE_ITEM LibrarySources ${MainSources} )
 
 
 ###############################################################################
@@ -58,28 +63,45 @@ endif()
 ###############################################################################
 # Build target
 ###############################################################################
-set( ExecutableName Enter_exec_name_here )
+# Internal library first
+set( InternalLibrary "${Project}_" ) # cmake will add a "lib" prefix to the name
 
-add_executable( ${ExecutableName} ${Sources} )
-
-target_include_directories( ${ExecutableName}
+add_library( ${InternalLibrary}
+    ${LibrarySources}
+    )
+add_library( Lib::InternalLibrary
+    ALIAS ${InternalLibrary}
+    )
+target_include_directories( ${InternalLibrary}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
+target_compile_definitions( ${InternalLibrary}
+    PUBLIC Wall Wextra Wpedantic
+    )
 
-target_compile_definitions( ${ExecutableName}
-    PUBLIC Wall Wextra Wpedantic)
+# Then the executable
+set( Executable !!_ENTER_EXECUTABLE_NAME_HERE!! )
+add_executable( ${Executable}
+    ${MainSources}
+    )
+target_include_directories( ${Executable}
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    )
+target_compile_definitions( ${Executable}
+    PUBLIC Wall Wextra Wpedantic
+    )
 
-# if using any external libraries include them here
-# they need to be properly found first. See find_package section
-target_link_libraries( ${ExecutableName}
-    some_lib
+# If using any external libraries include them here after the Internal Library.
+# They need to be properly found first. See find_package section
+target_link_libraries( ${Executable}
+    Lib::InternalLibrary
     )
 
 
 ###############################################################################
 # Unit Tests
 ###############################################################################
-include_subdirectory( tests )
+add_subdirectory( tests )
 
 
 ###############################################################################
@@ -89,23 +111,22 @@ include_subdirectory( tests )
 # Set installation root directory
 set( CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" )
 install( TARGETS ${ExecutableName}
-         DESTINATION bin
+         DESTINATION .
        )
 
 # On Windows
 # install( TARGETS ${ExecutableName}
-#          LIBRARY DESTINATION lib
-#          RUNTIME DESTINATION bin
+#          RUNTIME DESTINATION .
 #        )
 
 # install any additional files
 # install( FILES enter-file-dir-here 
-#          DESTINATION etc
+#          DESTINATION .
 #        )
 
 # Create a cpack-based installer
 include( InstallRequiredSystemLibraries )
-set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt )
-set( CPACK_PACKAGE_VERSION_MAJOR "${${ProjectName}_VERSION_MAJOR} )
-set( CPACK_PACKAGE_VERSION_MINOR "${${ProjectName}_VERSION_MINOR} )
+# set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt" )
+# set( CPACK_PACKAGE_VERSION_MAJOR "${${Project}_VERSION_MAJOR}" )
+# set( CPACK_PACKAGE_VERSION_MINOR "${${Project}_VERSION_MINOR}" )
 include( CPack )

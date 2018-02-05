@@ -5,18 +5,19 @@ cmake_minimum_required( VERSION 3.1 )
 # in the form of a cmake INTERFACE library with ALIAS Catch::Test
 ###############################################################################
 
-set( TestProjectName ${Enter_project_name_here} )
-project( ${TestProjectName} )
+set( TestProject "Tests_${Project}" )
+project( ${TestProject} )
 
 
 ###############################################################################
 # Prepare test sources
 
 # These are all sources EXCLUDING the tests_main.cpp which contains main()
-# or the appropriate Catch2 define
+# function or the appropriate Catch2 define.
+# Naming convention is assumed - test_someFeatureUnderTest.cpp
 file( GLOB TestSources
       RELATIVE "${PROJECT_SOURCE_DIR}"
-               "${PROJECT_SOURCE_DIR}/test_*.cpp
+      "${PROJECT_SOURCE_DIR}/test_*.cpp"
     )
 
 # enable CTest testing
@@ -26,18 +27,18 @@ enable_testing()
 ###############################################################################
 # Build executable
 
-set( TestExecutableName Enter_test_exec_here )
-add_executable( ${TestExecutableName} tests_main.cpp )
-target_sources( ${TestExecutableName}
+set( TestExecutable "test_${Executable}" )
+# test_main.cpp assumed to contain the main() function or the appropriate
+# Catch2 define.
+add_executable( ${TestExecutable}
+    tests_main.cpp
+    )
+target_sources( ${TestExecutable}
     PUBLIC ${TestSources}
     )
-
-target_include_directories( ${TestExecutableName}
-    PUBLIC ${CMAKE_SOURCE_DIR}
-    )
-
-target_link_libraries( ${TestExecutableName}
+target_link_libraries( ${TestExecutable}
+    Lib::InternalLibrary
     Catch::Test
     )
 
-add_test( test_all ${TestExecutableName} )
+add_test( test_all ${TestProject} )

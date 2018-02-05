@@ -1,16 +1,16 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(  VERSION 3.1 )
 
-set( ProjectName Enter_name_here )
-project( ${ProjectName} )
+set( Project !!_ENTER_PROJECT_NAME_HERE_!! )
+project( ${Project} )
 
 
 ###############################################################################
 # Prepare external dependencies
 ###############################################################################
-# If using any third-party libraries create a 'third-party'
+# If using any external libraries create a 'external'
 # subdir with an appropriate CMakeLists and add the following
 # for each library
-# add subdirectory( third-party/some_lib )
+add_subdirectory( external/clara )
 
 # Find any external libraries via find_backage
 # see cmake --help-module-list and cmake --help-module ModuleName
@@ -30,15 +30,15 @@ project( ${ProjectName} )
 ###############################################################################
 # Create a Sources variable to all the cpp files necessary
 # to build the target
-set( Sources
-     src/file1.cpp
-     src/file2.cpp
-   )
+# set( Sources
+#     ${PROJECT_SOURCE_DIR}/src/file1.cpp
+#     ${PROJECT_SOURCE_DIR}/src/file2.cpp
+#    )
 
 # Or glob all the files
-# file( GLOB Sources 
-#       "${PROJECT_SOURCE_DIR}/src/*.cpp"
-#     )
+file( GLOB Sources 
+      "${PROJECT_SOURCE_DIR}/src/*.cpp"
+    )
 
 
 ###############################################################################
@@ -56,19 +56,19 @@ endif()
 ###############################################################################
 # Build target
 ###############################################################################
-set( ExecutableName Enter_exec_name_here )
+set( Executable !!_ENTER_EXECUTABLE_NAME_HERE_!! )
 
-add_executable( ${ExecutableName} ${Sources} )
+add_executable( ${Executable} ${Sources} )
 
-target_include_directories( ${ExecutableName}
-    PRIVATE ${PROJECT_SOURCE_DIR}/include
+target_include_directories( ${Executable}
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
-
-target_compile_definitions( ${ExecutableName}
-    PUBLIC Wall Wextra Wpedantic)
+target_compile_definitions( ${Executable}
+    PUBLIC Wall Wextra Wpedantic
+    )
 
 # if using any external libraries include them here
 # they need to be properly found first. See find_package section
-target_link_libraries( ${ExecutableName}
-    some_lib
+target_link_libraries( ${Executable}
+    Clara::Clara
     )
