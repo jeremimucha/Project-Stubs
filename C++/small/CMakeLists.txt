@@ -18,10 +18,13 @@ add_subdirectory( external/catch )
 # see cmake --help-module-list and cmake --help-module ModuleName
 # for details on a specific module
 # If using boost
-# find_package( Boost 1.60.0 REQUIRED COMPONENTS filesystem system iostreams )
+# find_package( Boost 1.60.0
+#   REQUIRED COMPONENTS
+#   filesystem system iostreams
+#   )
 #
 # if( Boost_FOUND )
-#   message( "boost found" )
+#   include_directories( ${Boost_INCLUDE_DIRS} )
 # else()
 #   message( FATAL_ERROR "Cannon find Boost" )
 # endif()
@@ -81,6 +84,9 @@ target_include_directories( ${InternalLibrary}
 target_compile_definitions( ${InternalLibrary}
     PUBLIC Wall Wextra Wpedantic
     )
+# target_link_libraries( ${InternalLibrary}
+#     # ${Boost_LIBRARIES}
+#     )
 
 # Then the executable
 set( Executable !!_ENTER_EXECUTABLE_NAME_HERE!! )
@@ -98,6 +104,7 @@ target_compile_definitions( ${Executable}
 # They need to be properly found first. See find_package section
 target_link_libraries( ${Executable}
     Lib::InternalLibrary
+    # ${Boost_LIBRARIES}
     )
 
 

@@ -16,10 +16,13 @@ add_subdirectory( external/clara )
 # see cmake --help-module-list and cmake --help-module ModuleName
 # for details on a specific module
 # If using boost
-# find_package( Boost 1.60.0 REQUIRED COMPONENTS filesystem system iostreams )
+# find_package( Boost 1.60.0
+#   REQUIRED COMPONENTS
+#   filesystem system iostreams
+#   )
 #
 # if( Boost_FOUND )
-#   message( "boost found" )
+#   include_directories( ${Boost_INCLUDE_DIRS} )
 # else()
 #   message( FATAL_ERROR "Cannon find Boost" )
 # endif()
@@ -74,4 +77,5 @@ target_compile_definitions( ${Executable}
 # they need to be properly found first. See find_package section
 target_link_libraries( ${Executable}
     Clara::Clara
+    # ${Boost_LIBRARIES}
     )
