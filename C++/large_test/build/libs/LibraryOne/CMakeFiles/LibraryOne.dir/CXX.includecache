@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../libs/LibraryOne/include/LibraryOne/one.hpp
+gsl/gsl
+-
+string
+-
+iostream
+-
+
+C:/dev/Project-Stubs/C++/large_test/libs/LibraryOne/src/one.cpp
+LibraryOne/one.hpp
+C:/dev/Project-Stubs/C++/large_test/libs/LibraryOne/src/LibraryOne/one.hpp
+
