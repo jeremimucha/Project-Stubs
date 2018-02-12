@@ -20,8 +20,7 @@ file( GLOB TestSources
       "${PROJECT_SOURCE_DIR}/test_*.cpp"
     )
 
-# enable CTest testing
-enable_testing()
+
 
 
 ###############################################################################
@@ -40,6 +39,12 @@ target_link_libraries( ${PROJECT_NAME}
     Catch::Test
     )
 
-add_test( test_all
-    ${PROJECT_NAME}
-    )
+    
+###############################################################################
+# CTest
+
+# enable_testing()
+
+# add_test( test_all
+#     ${PROJECT_NAME}
+#     )

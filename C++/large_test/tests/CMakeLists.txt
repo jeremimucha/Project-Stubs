@@ -5,7 +5,7 @@ cmake_minimum_required( VERSION 3.1 )
 # in the form of a cmake INTERFACE library with ALIAS Catch::Test
 ###############################################################################
 
-set( TestProject "tests_${CMAKE_PROJECT_NAME}" )
+set( TestProject "test_${CMAKE_PROJECT_NAME}" )
 project( ${TestProject} )
 
 
@@ -19,9 +19,6 @@ file( GLOB TestSources
       RELATIVE "${PROJECT_SOURCE_DIR}"
       "${PROJECT_SOURCE_DIR}/test_*.cpp"
     )
-
-# enable CTest testing
-enable_testing()
 
 
 ###############################################################################
@@ -39,15 +36,26 @@ target_link_libraries( ${PROJECT_NAME}
     Catch::Test
     ${AllInternalLibraries}
     )
+# --- test sources of all the defined internal libraries
+foreach( lib ${InternalLibraries} )
+    file( GLOB "Test${lib}Sources_"
+          "${CMAKE_SOURCE_DIR}/libs/${lib}/tests/test_*.cpp"
+        )
+    target_sources( ${PROJECT_NAME}
+        PUBLIC "${Test${lib}Sources_}")
+endforeach()
+# ---
 
-add_test( test_all
-    ${TestProject}
-    ${InternalLibraries}
-    )
 
-add_test( test_LibraryOne
-    LibraryOne
-    )
-add_test( test_LibraryTwo
-    LibraryTwo
-    )
+###############################################################################
+# CTest
+# enable_testing()
+
+# add_test( test_all
+#     ${TestProject}
+#     )
+
+# foreach( lib ${InternalLibraries} )
+#     add_test( test_all "${CMAKE_BINARY_DIR}/libs/${lib}/tests/test_${lib}")
+#     add_test( "test_${lib}" "${CMAKE_BINARY_DIR}/libs/${lib}/tests/test_${lib}")
+# endforeach()
