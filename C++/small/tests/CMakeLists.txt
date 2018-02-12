@@ -5,7 +5,7 @@ cmake_minimum_required( VERSION 3.1 )
 # in the form of a cmake INTERFACE library with ALIAS Catch::Test
 ###############################################################################
 
-set( TestProject "Tests_${Project}" )
+set( TestProject "test_${Project}" )
 project( ${TestProject} )
 
 
@@ -20,25 +20,32 @@ file( GLOB TestSources
       "${PROJECT_SOURCE_DIR}/test_*.cpp"
     )
 
-# enable CTest testing
-enable_testing()
-
 
 ###############################################################################
 # Build executable
 
-set( TestExecutable "test_${Executable}" )
+# set( TestExecutable "test_${Executable}" )
 # test_main.cpp assumed to contain the main() function or the appropriate
 # Catch2 define.
-add_executable( ${TestExecutable}
+add_executable( ${PROJECT_NAME}
     tests_main.cpp
     )
-target_sources( ${TestExecutable}
+target_sources( ${PROJECT_NAME}
     PUBLIC ${TestSources}
     )
-target_link_libraries( ${TestExecutable}
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
+    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
+endif()
+if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
+endif()
+target_link_libraries( ${PROJECT_NAME}
     Lib::InternalLibrary
     Catch::Test
     )
 
-add_test( test_all ${TestProject} )
+
+###############################################################################
+# CTest
+# enable_testing()
+# add_test( test_all ${TestProject} )

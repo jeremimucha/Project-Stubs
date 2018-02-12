@@ -62,20 +62,23 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 ###############################################################################
 # Build target
 ###############################################################################
-set( Executable !!_ENTER_EXECUTABLE_NAME_HERE_!! )
+# set( Executable !!_ENTER_EXECUTABLE_NAME_HERE_!! )
 
-add_executable( ${Executable} ${Sources} )
+add_executable( ${PROJECT_NAME} ${Sources} )
 
-target_include_directories( ${Executable}
+target_include_directories( ${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
-target_compile_definitions( ${Executable}
-    PUBLIC Wall Wextra Wpedantic
-    )
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
+    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
+endif()
+if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
+endif()
 
 # if using any external libraries include them here
 # they need to be properly found first. See find_package section
-target_link_libraries( ${Executable}
+target_link_libraries( ${PROJECT_NAME}
     Clara::Clara
     # ${Boost_LIBRARIES}
     )

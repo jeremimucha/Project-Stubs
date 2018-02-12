@@ -20,9 +20,6 @@ file( GLOB TestSources
       "${PROJECT_SOURCE_DIR}/test_*.cpp"
     )
 
-# enable CTest testing
-enable_testing()
-
 
 ###############################################################################
 # Build executable
@@ -39,7 +36,19 @@ target_link_libraries( ${PROJECT_NAME}
     Lib::${LibraryName}
     Catch::Test
     )
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
+    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
+endif()
+if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
+endif()
 
-add_test( test_all
-    ${PROJECT_NAME}
-    )
+
+###############################################################################
+# CTest
+
+# enable_testing()
+
+# add_test( test_all
+#     ${PROJECT_NAME}
+#     )

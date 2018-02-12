@@ -76,10 +76,10 @@ target_include_directories( ${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
 if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
-    target_compile_options( ${TopLevelLibrary} PUBLIC -Wall -Wextra -pedantic -Werror )
+    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
 endif()
 if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
-	target_compile_options( ${TopLevelLibrary} PRIVATE /W4 /WX )
+	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
 endif()
 # target_link_libraries( ${Library}
 #     # ${Boost_LIBRARIES}

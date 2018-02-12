@@ -3,15 +3,6 @@ cmake_minimum_required( VERSION 3.1 )
 set( Project !!_ENTER_PROJECT_NAME_HERE_!! )
 project( ${Project} )
 
-
-###############################################################################
-# Prepare internal dependancies
-###############################################################################
-# Define a list of all the internal libraries here
-set( InternalLibraries
-     LibraryName
-   )
-
 ###############################################################################
 # Prepare external dependencies
 ###############################################################################
@@ -77,8 +68,17 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 ###############################################################################
 # Build target
 ###############################################################################
-# Internal library first
-set( TopLevelLibrary "${Project}_" ) # cmake will add a "lib" prefix to the name
+# Libraries
+# Define a list of all the internal libraries here
+set( InternalLibraries
+     !!_LIST_ALL_INTERNAL_LIBRARIES_HERE_!!
+   )
+foreach( lib ${InternalLibraries} )
+    add_subdirectory( "libs/${lib}" )
+endforeach()
+
+# Toplevel internal library
+set( TopLevelLibrary "${PROJECT_NAME}_internallib" ) # cmake will add a "lib" prefix to the name
 
 add_library( ${TopLevelLibrary}
     ${TopLevelLibrarySources}
@@ -103,23 +103,23 @@ endif()
 set( AllInternalLibraries ${InternalLibraries} ${TopLevelLibrary} )
 
 # Then the executable
-set( Executable !!_ENTER_EXECUTABLE_NAME_HERE!! )
-add_executable( ${Executable}
+# set( Executable ${PROJECT_NAME} )
+add_executable( ${PROJECT_NAME}
     ${MainSources}
     )
-target_include_directories( ${Executable}
+target_include_directories( ${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
 if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
-    target_compile_options( ${Executable} PUBLIC -Wall -Wextra -pedantic -Werror )
+    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
 endif()
 if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
-	target_compile_options( ${Executable} PRIVATE /W4 /WX )
+	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
 endif()
 
 # If using any external libraries include them here after the Internal Library.
 # They need to be properly found first. See find_package section
-target_link_libraries( ${Executable}
+target_link_libraries( ${PROJECT_NAME}
     ${AllInternalLibraries}
     # ${Boost_LIBRARIES}
     )

@@ -10,7 +10,7 @@ project( ${Project} )
 # If using any external libraries create a 'external'
 # subdir with an appropriate CMakeLists and add the following
 # for each library
-# add_subdirectory( third-party/some_lib )
+# add_subdirectory( external/some_lib )
 add_subdirectory( external/catch )
 
 
@@ -70,7 +70,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 # Build target
 ###############################################################################
 # Internal library first
-set( InternalLibrary "${Project}_" ) # cmake will add a "lib" prefix to the name
+set( InternalLibrary "${Project}_internallib" ) # cmake will add a "lib" prefix to the name
 
 add_library( ${InternalLibrary}
     ${LibrarySources}
@@ -81,28 +81,34 @@ add_library( Lib::InternalLibrary
 target_include_directories( ${InternalLibrary}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
-target_compile_definitions( ${InternalLibrary}
-    PUBLIC Wall Wextra Wpedantic
-    )
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
+    target_compile_options( ${InternalLibrary} PUBLIC -Wall -Wextra -pedantic -Werror )
+endif()
+if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+	target_compile_options( ${InternalLibrary} PRIVATE /W4 /WX )
+endif()
 # target_link_libraries( ${InternalLibrary}
 #     # ${Boost_LIBRARIES}
 #     )
 
 # Then the executable
-set( Executable !!_ENTER_EXECUTABLE_NAME_HERE!! )
-add_executable( ${Executable}
+# set( Executable !!_ENTER_EXECUTABLE_NAME_HERE!! )
+add_executable( ${PROJECT_NAME}
     ${MainSources}
     )
-target_include_directories( ${Executable}
+target_include_directories( ${PROJECT_NAME}
     PUBLIC ${PROJECT_SOURCE_DIR}/include
     )
-target_compile_definitions( ${Executable}
-    PUBLIC Wall Wextra Wpedantic
-    )
+if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
+    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
+endif()
+if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
+endif()
 
 # If using any external libraries include them here after the Internal Library.
 # They need to be properly found first. See find_package section
-target_link_libraries( ${Executable}
+target_link_libraries( ${PROJECT_NAME}
     Lib::InternalLibrary
     # ${Boost_LIBRARIES}
     )
@@ -120,12 +126,12 @@ add_subdirectory( tests )
 # for make install
 # Set installation root directory
 set( CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" )
-install( TARGETS ${ExecutableName}
+install( TARGETS ${PROJECT_NAME}
          DESTINATION .
        )
 
 # On Windows
-# install( TARGETS ${ExecutableName}
+# install( TARGETS ${PROJECT_NAME}
 #          RUNTIME DESTINATION .
 #        )
 
