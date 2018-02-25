@@ -66,14 +66,22 @@ file( GLOB LibrarySources
 # Build target library
 ###############################################################################
 
-add_library( ${PROJECT_NAME}    # STATIC or DYNAMIC
+add_library( ${PROJECT_NAME}
+    SHARED      # STATIC or SHARED
     ${LibrarySources}
     )
 add_library( Lib::${PROJECT_NAME}
     ALIAS ${PROJECT_NAME}
     )
 target_include_directories( ${PROJECT_NAME}
-    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    )
+target_include_directories( ${PROJECT_NAME}
+    PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/${LibraryName}
+    $<INSTALL_INTERFACE:include/${LibraryName}
     )
 if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
     target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
@@ -90,3 +98,11 @@ endif()
 # Unit Tests
 ###############################################################################
 add_subdirectory( tests )
+
+###############################################################################
+# Install
+###############################################################################
+install( TARGETS ${PROJECT_NAME}
+         DESTINATION lib
+         LIBRARY
+       )

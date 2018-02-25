@@ -137,12 +137,15 @@ add_subdirectory( tests )
 # for make install
 # Set installation root directory
 set( CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" )
-install( TARGETS ${ExecutableName}
-         DESTINATION .
+install( TARGETS ${PROJECT_NAME}
+         DESTINATION bin
+       )
+install( TARGETS ${InternalLibraries}
+         LIBRARY DESTINATION lib
        )
 
 # On Windows
-# install( TARGETS ${ExecutableName}
+# install( TARGETS ${PROJECT_NAME}
 #          RUNTIME DESTINATION .
 #        )
 
