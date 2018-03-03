@@ -92,7 +92,6 @@ endif()
 #     )
 
 # Then the executable
-# set( Executable !!_ENTER_EXECUTABLE_NAME_HERE!! )
 add_executable( ${PROJECT_NAME}
     ${MainSources}
     )
@@ -127,8 +126,12 @@ add_subdirectory( tests )
 # Set installation root directory
 set( CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" )
 install( TARGETS ${PROJECT_NAME}
-         DESTINATION .
+         DESTINATION bin
        )
+# If you decide to also install the internal library (e.g. if compiled as dynamic)
+# install( TARGETS ${InternalLibrary}
+#          LIBRARY DESTINATION lib
+#        )
 
 # On Windows
 # install( TARGETS ${PROJECT_NAME}
@@ -146,3 +149,4 @@ include( InstallRequiredSystemLibraries )
 # set( CPACK_PACKAGE_VERSION_MAJOR "${${Project}_VERSION_MAJOR}" )
 # set( CPACK_PACKAGE_VERSION_MINOR "${${Project}_VERSION_MINOR}" )
 include( CPack )
+
