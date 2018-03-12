@@ -42,6 +42,8 @@ endif()
 target_link_libraries( ${PROJECT_NAME}
     Lib::InternalLibrary
     Catch::Test
+    GTest::GTest
+    GTest::Main
     )
 
 

@@ -11,6 +11,7 @@ project( ${Project} )
 # subdir with an appropriate CMakeLists and add the following
 # for each library
 # add_subdirectory( external/some_lib )
+# add_subdirectory( external/google-test )
 add_subdirectory( external/catch )
 
 

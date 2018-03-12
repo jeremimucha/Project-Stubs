@@ -10,7 +10,7 @@ project( ${Project} )
 # subdir with an appropriate CMakeLists and add the following
 # for each library
 # add_subdirectory( external/some_lib )
-add_subdirectory( external/catch )
+add_subdirectory( external/google-test )
 
 
 # Find any external libraries via find_backage

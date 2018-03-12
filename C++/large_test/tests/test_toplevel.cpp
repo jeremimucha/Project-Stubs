@@ -1,10 +1,11 @@
 #include "toplevel.hpp"
-#include "catch/catch.hpp"
+#include "gtest/gtest.h"
 
+class TopLevel : public ::testing::Test { };
 
-TEST_CASE( "test toplevel" )
+TEST_F( TopLevel, topleveltest )
 {
     int test_value[]{1,2,3,4,5};
     toplevel_function(test_value);
-    REQUIRE( true );
+    EXPECT_TRUE( true );
 }

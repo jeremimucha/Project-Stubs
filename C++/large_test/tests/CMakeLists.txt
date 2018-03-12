@@ -33,7 +33,8 @@ target_sources( ${PROJECT_NAME}
     PUBLIC ${TestSources}
     )
 target_link_libraries( ${PROJECT_NAME}
-    Catch::Test
+    GTest::GTest
+    GTest::Main
     ${AllInternalLibraries}
     )
 # --- test sources of all the defined internal libraries

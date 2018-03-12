@@ -26,22 +26,23 @@ file( GLOB TestSources
 
 # test_main.cpp assumed to contain the main() function or the appropriate
 # Catch2 define.
-add_executable( ${PROJECT_NAME}
-    tests_main.cpp
-    )
-target_sources( ${PROJECT_NAME}
-    PUBLIC ${TestSources}
-    )
-target_link_libraries( ${PROJECT_NAME}
-    Lib::${LibraryName}
-    Catch::Test
-    )
-if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
-    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
-endif()
-if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
-	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
-endif()
+# add_executable( ${PROJECT_NAME}
+#     tests_main.cpp
+#     )
+# target_sources( ${PROJECT_NAME}
+#     PUBLIC ${TestSources}
+#     )
+# target_link_libraries( ${PROJECT_NAME}
+#     Lib::${LibraryName}
+#     GTest::GTest
+#     # GTest::Main
+#     )
+# if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
+#     target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
+# endif()
+# if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
+# 	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
+# endif()
 
 
 ###############################################################################
