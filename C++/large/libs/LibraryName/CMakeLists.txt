@@ -61,13 +61,44 @@ file( GLOB LibrarySources
 #   set( CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
 # endif()
 
+option(CPP_USE_CPPCHECK "Enable cppcheck build step" TRUE)
+if(CPP_USE_CPPCHECK)
+  find_program(Cppcheck NAMES cppcheck)
+  if (Cppcheck)
+      list(
+          APPEND Cppcheck 
+              "--enable=all"
+              "--inconclusive"
+              "--force"
+              "--verbose"
+              "--language=c++"
+              "--inline-suppr"
+              "${CMAKE_SOURCE_DIR}/include/${PROJECT_NAME}/*.h"
+              "${CMAKE_SOURCE_DIR}/src/*.cpp"
+              "${CMAKE_SOURCE_DIR}/test/*.cpp"
+      )
+      message(${Cppcheck})
+  endif()
+endif()
 
+option(CPP_USE_CLANGTIDY "Enable clang-tidy build step" TRUE)
+if(CPP_USE_CLANGTIDY)
+  find_program(Clangtidy NAMES clang-tidy)
+  if (Clangtidy)
+      list(
+          APPEND Clangtidy 
+              "-checks='*'"
+              "-header-filter='.*'"
+      )
+      message(${Clangtidy})
+  endif()
+endif()
 ###############################################################################
 # Build target library
 ###############################################################################
 
 add_library( ${PROJECT_NAME}
-    SHARED      # STATIC or SHARED
+    STATIC      # STATIC or SHARED
     ${LibrarySources}
     )
 add_library( Lib::${PROJECT_NAME}
@@ -83,15 +114,27 @@ target_include_directories( ${PROJECT_NAME}
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/${LibraryName}
     $<INSTALL_INTERFACE:include/${LibraryName}
     )
-if( CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU" )
-    target_compile_options( ${PROJECT_NAME} PUBLIC -Wall -Wextra -pedantic -Werror )
+if(CPP_USE_CPPCHECK)
+    set_target_properties( ${PROJECT_NAME}
+        PROPERTIES
+        CXX_CPPCHECK "${Cppcheck}"
+    )
 endif()
-if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
-	target_compile_options( ${PROJECT_NAME} PRIVATE /W4 /WX )
+if(CPP_USE_CLANGTIDY)
+    set_target_properties( ${PROJECT_NAME}
+        PROPERTIES
+        CXX_CLANG_TIDY "${Clangtidy}"
+    )
 endif()
-# target_link_libraries( ${Library}
-#     # ${Boost_LIBRARIES}
-#     )
+target_compile_options( ${PROJECT_NAME}
+    PRIVATE
+    # -fconcepts
+    # -lstdc++fs
+    )
+target_link_libraries( ${PROJECT_NAME}
+    Project_config
+    # ${Boost_LIBRARIES}
+    )
 
 
 ###############################################################################
