@@ -179,7 +179,6 @@ if(CPP_USE_CPPCHECK)
               "--inline-suppr"
               "${CMAKE_SOURCE_DIR}/include/*.h"
               "${CMAKE_SOURCE_DIR}/src/*.cpp"
-              "${CMAKE_SOURCE_DIR}/test/*.cpp"
       )
       message(${Cppcheck})
   endif()
