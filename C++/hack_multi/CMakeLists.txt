@@ -66,9 +66,8 @@ if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options( Project_config INTERFACE /W4 /WX )
 else()
     if(CMAKE_BUILD_TYPE MATCHES Debug)
-      target_compile_options( Project_config INTERFACE
-        -Og
-    )
+      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
+    endif()
     target_compile_options( Project_config INTERFACE
       -Wall
       -Wextra # reasonable and standard
@@ -88,7 +87,6 @@ else()
       -Wformat=2 # warn on security issues around functions that format output
               # (ie printf) 
     )
-    endif()
     if(ENABLE_WERROR)
       target_compile_options( Project_config INTERFACE
         -Werror

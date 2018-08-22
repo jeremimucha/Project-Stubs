@@ -78,6 +78,9 @@ add_library(Project_config INTERFACE)
 if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options( Project_config INTERFACE /W4 /WX )
 else()
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
+    endif()
     target_compile_options( Project_config INTERFACE
       -Wall
       -Wextra # reasonable and standard
@@ -112,12 +115,12 @@ else()
       )
     endif()
     if(ENABLE_ASAN OR ENABLE_USAN OR ENABLE_TSAN)
-      if(CMAKE_BUILD_TYPE NOT (MATCHES "Debug"))
-        message(WARNING "Sanitizers used with build other than 'Debug' flags set -O0 -g")
+    if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
+        message(WARNING "Sanitizers used with build other than 'Debug' flags set -Og -g")
       endif()
       target_compile_options( Project_config INTERFACE
           -g
-          -O0
+          -Og
       )
     endif()
     if(ENABLE_COVERAGE)

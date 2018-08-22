@@ -73,6 +73,9 @@ add_library(Project_config INTERFACE)
 if( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options( Project_config INTERFACE /W4 /WX )
 else()
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
+    endif()
     target_compile_options( Project_config INTERFACE
       -Wall
       -Wextra # reasonable and standard
@@ -89,8 +92,7 @@ else()
       -Wsign-conversion # warn on sign conversions
       -Wnull-dereference # warn if a null dereference is detected
       -Wdouble-promotion # warn if float is implicit promoted to double
-      -Wformat=2 # warn on security issues around functions that format output
-              # (ie printf) 
+      -Wformat=2 # warn on security issues around functions that format output (ie printf) 
     )
     if(ENABLE_WERROR)
       target_compile_options( Project_config INTERFACE
@@ -107,12 +109,12 @@ else()
       )
     endif()
     if(ENABLE_ASAN OR ENABLE_USAN OR ENABLE_TSAN)
-      if(CMAKE_BUILD_TYPE NOT (MATCHES "Debug"))
-        message(WARNING "Sanitizers used with build other than 'Debug' flags set -O0 -g")
+      if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
+        message(WARNING "Sanitizers used with build other than 'Debug' flags set -Og -g")
       endif()
       target_compile_options( Project_config INTERFACE
           -g
-          -O0
+          -Og
       )
     endif()
     if(ENABLE_COVERAGE)
@@ -128,9 +130,6 @@ else()
       )
     endif()
     if(ENABLE_ASAN OR ENABLE_USAN OR ENABLE_TSAN)
-    #   target_compile_options( Project_config INTERFACE
-    #       -fuse-ld=gold   # only needed at linktime
-    #   )
       target_link_libraries( Project_config INTERFACE
           -fuse-ld=gold
       )
@@ -149,7 +148,7 @@ else()
     endif()
     if(ENABLE_USAN)
       target_compile_options( Project_config INTERFACE
-        -fsanitize=undefined
+          -fsanitize=undefined
       )
       target_link_libraries( Project_config INTERFACE
           -fsanitize=undefined
