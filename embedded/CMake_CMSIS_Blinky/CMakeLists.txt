@@ -1,14 +1,26 @@
 cmake_minimum_required( VERSION 3.10 )
 
+# The Toolchain needs to be set before declaring the project.
+# It also needs to be a CACHE STRING (only STRING works for some reason...)
+# and it needs to be FORCEd.
+# Setting paths relative to ${PROJECT_SOURCE_DIR} or ${CMAKE_SOURCE_DIR}
+# doesn't seem to work either...
+set( CMAKE_TOOLCHAIN_FILE tm4c123.cmake CACHE STRING "toolchain file" FORCE)
+
 project( hello_embedded CXX C ASM )
 
 # Execute with the following flags
-# -DCMAKE_TOOLCHAIN_FILE=../tm4c123.cmake   - path to the toolchain
-# -DCMAKE_C_COMPILER_FORCED=1 - prevent CMake attempting to compile a compiler test exe
-# -DCMAKE_CXX_COMPILER_FORCED=1 - same
 # -DOPENOCD_PATH_HINT=/path/to/OpenOCD/bin
 # -DOPENOCD_BOARD_CFG=/path/to/openocd/board/script
 # The default board script is located at openocd/share/openocd/scripts/board/ek-tm4c123gxl.cfg
+
+# The toolchain file is now forced - setting it on the command line doesn't seem to work
+# -DCMAKE_TOOLCHAIN_FILE=../tm4c123.cmake   - path to the toolchain
+
+# These no longer seem necessary since setting the C and CXX compilers with a CACHE STRING FORCE
+# variable seems to work. Try anyway in case of issues
+# -DCMAKE_C_COMPILER_FORCED=1 - prevent CMake attempting to compile a compiler test exe
+# -DCMAKE_CXX_COMPILER_FORCED=1 - same
 
 # set( CMAKE_TOOLCHAIN_FILE tm4c123.cmake )
 set( LINKER_SCRIPT ${PROJECT_SOURCE_DIR}/TM4C123.ld )

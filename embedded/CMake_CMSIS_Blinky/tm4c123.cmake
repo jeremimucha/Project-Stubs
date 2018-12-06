@@ -1,27 +1,31 @@
+include(CmakeForceCompiler)
+set(CMAKE_CROSSCOMPILING TRUE CACHE BOOL "crosscompiling?" FORCE)
 # The Generic system is used with CMake to specify bare metal
-set( CMAKE_SYSTEM_NAME      Generic )
-set( CMAKE_SYSTEM_PROCESSOR arm )
+set( CMAKE_SYSTEM_NAME      Generic CACHE STRING "platform type - generic = bare metal" FORCE )
+set( CMAKE_SYSTEM_PROCESSOR arm CACHE STRING "target processor family" FORCE )
 
 # Setup the path where the toolchain is located
-set( TOOLCHAIN_PATH "I:/gcc-arm-none-eabi/bin" )
+set( TOOLCHAIN_PATH "I:/gcc-arm-none-eabi/bin" CACHE STRING "Toolchain bin path" )
 
 # The toolchain prefix for all toolchain executables
-set( TOOLCHAIN_PREFIX ${TOOLCHAIN_PATH}/arm-none-eabi- )
+set( TOOLCHAIN_PREFIX ${TOOLCHAIN_PATH}/arm-none-eabi- CACHE STRING "Toolchain prefix" )
 
-set( CMAKE_C_COMPILER   "${TOOLCHAIN_PREFIX}gcc.exe" )
-set( CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}g++.exe" )
-set( CMAKE_LINKER       "${TOOLCHAIN_PREFIX}ld.exe" )
-set( CMAKE_AR           "${TOOLCHAIN_PREFIX}ar.exe" )
-set( CMAKE_ASM_COMPILER "${TOOLCHAIN_PREFIX}as.exe" )
+# All of the toolchain variables need to be FORCEd
+set( CMAKE_C_COMPILER   "${TOOLCHAIN_PREFIX}gcc.exe" CACHE STRING "C compiler" FORCE )
+set( CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}g++.exe" CACHE STRING "C++ compiler" FORCE )
+set( CMAKE_LINKER       "${TOOLCHAIN_PREFIX}ld.exe"  CACHE STRING "Linker" FORCE )
+set( CMAKE_AR           "${TOOLCHAIN_PREFIX}ar.exe"  CACHE STRING "Archive tool" FORCE )
+set( CMAKE_ASM_COMPILER "${TOOLCHAIN_PREFIX}as.exe"  CACHE STRING "Assembler" FORCE )
 
 # Setup objcopy to allow us to take the linker output and change it to another format
 # e.g. convert .elf into raw binary format
 set( CMAKE_OBJCOPY      "${TOOLCHAIN_PREFIX}objcopy.exe"
      CACHE FILEPATH "The toolchain objcopy command" FORCE )
-set( CMAKE_OBJDUMP      "${TOOLCHAIN_PREFIX}objdump.exe" )
+set( CMAKE_OBJDUMP      "${TOOLCHAIN_PREFIX}objdump.exe" 
+    CACHE FILEPATH "The toolchain objdump command" FORCE )
 
 # Compile static libraries instead of .exe files to avoid linkage issues
-set( CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY )
+set( CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY CACHE STRING "..." FORCE )
 
 # Let CMake find executable on the host, but don't let it use libraries from the host
 # search for programs in the build host directories

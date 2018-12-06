@@ -7,11 +7,16 @@ The project needs to be configured with CMake using the included toolchain file.
 It's set up and tested for gcc-arm-none-eabi 7.3.1.
 Run CMake from the build directory with the following flags:
 
-> -DCMAKE_TOOLCHAIN_FILE=../tm4c123.cmake  
-> -DCMAKE_C_COMPILER_FORCED=1  
-> -DCMAKE_CXX_COMPILER_FORCED=1  
 > -DOPENOCD_PATH_HINT=/path/to/OpenOCD/bin  
 > -DOPENOCD_BOARD_CFG=/path/to/openocd/board/script  
+> -DTOOLCHAIN_PATH=/path/to/toolchian/bin
+
+The Toolchain file is now forced in the top level CMakeLists.txt. Setting it on the command line doesn't seem to work...
+> -DCMAKE_TOOLCHAIN_FILE=../tm4c123.cmake  
+
+These two flags no longer seem necessary after the toolchain file has been fixed. Try in case you run into problems.
+> -DCMAKE_C_COMPILER_FORCED=1  
+> -DCMAKE_CXX_COMPILER_FORCED=1  
 
 * The toolchain file configures cmake for compiling a bare metal project using.
     * Make sure to enter a correct toolchain path pointing to the bin/ of your installatioin of gcc-arm-non-eabi compiler,within the toolchain file.
@@ -22,19 +27,19 @@ executable program to check if the compiler is working.
 
 * The OPENOCD_PATH_HINT is optional. It should be provided if CMake refuses to find the system installation of openocd or if a different installation is preffered over the system one.
 
-* The OPENOCD_BOARD_CFG is required to enable a `flash` build target, which uses openocd to program the generated binary.
+* The OPENOCD_BOARD_CFG is required to enable `flash-elf` and `flash-bin` build targets, which use openocd to program the generated binary.
 
 ### Example usage:
 >mkdir build; cd build  
->$ `cmake` -DCMAKE_TOOLCHAIN_FILE=../tm4c123.cmake -DCMAKE_C_COMPILER_FORCED=1 -DCMAKE_CXX_COMPILER_FORCED=1 -DOPENOCD_PATH_HINT=~/OpenOCD/bin -DOPENOCD_BOARD_CFG=~/OpenOCD/share/openocd/scripts/board/ek-tm4c123gxl.cfg ..  
+>$ `cmake` -DOPENOCD_PATH_HINT=~/OpenOCD/bin -DOPENOCD_BOARD_CFG=~/OpenOCD/share/openocd/scripts/board/ek-tm4c123gxl.cfg ..  
 >$ `make`  
->$ `make flash`
+>$ `make flash-bin`
 
 Or use ninja-build
 >$ mkdir build; cd build  
 >$ `cmake` -G"Ninja" (same flags as above) ..  
 >$ `ninja`  
->$ `ninja flash`
+>$ `ninja flash-bin`
 
 Alternatively use openocd manually, or some other tool for flashing the board.
 Example using openocd:
@@ -42,7 +47,7 @@ Example using openocd:
 
 Also see: http://openocd.org/doc/html/Flash-Programming.html#Flash-Programming
 
-Should also work on Windows. Tested using MSYS2 and external installations of gcc-arm-non-eabi and openocd. If using ninja, should potentially work without any other dependencies.
+Should also work on Windows. Tested using MSYS2 and external installations of gcc-arm-non-eabi and openocd. ~~If using ninja, should potentially work without any other dependencies.~~ Also tested using windows installations of CMake, OpenOCD and Ninja.
 
 
 ## Debugging
